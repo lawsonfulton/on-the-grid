@@ -10,6 +10,10 @@ First make sure you have pip and virtualenv installed. Then install the required
     $source venv/bin/activate
     $pip install -r requirements.txt
 
+Then install PostgreSQL and create a database called "onthegrid".
+
+    $createdb onthegrid
+    
 Then you can start the application locally with
 
     $foreman start
