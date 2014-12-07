@@ -29,6 +29,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'vendorlist'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -59,7 +60,6 @@ USE_TZ = True
 import dj_database_url
 DATABASES['default'] = dj_database_url.config()
 
-print DATABASES
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
