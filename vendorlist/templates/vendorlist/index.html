@@ -1,0 +1,9 @@
+{% if vendor_event_counts %}
+    <ul>
+    {% for vendor_count in vendor_event_counts %}
+        <li><a href="{{ vendor_count.vendor.website }}">{{ vendor_count.vendor.name }}</a>, {{ vendor_count.event_count }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No vendors are available.</p>
+{% endif %}

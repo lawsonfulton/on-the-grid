@@ -1,42 +1,52 @@
-import datetime
+import datetime, time
 from django.test import TestCase
 from django.utils import timezone
-from django.db.models import Count
 from vendorlist.models import VendorEvent, Vendor, Location
 
 from django.core.management import call_command
 
 class DatabaseTestCase(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        print "Scraping vendor site. "
+        call_command("update_vendors")
+
+        vendors = Vendor.objects.all()
+
+        cls.num_days = 1
+        cls.events_per_day = 15
+
+        cls.locations = []
+        cls.locations.append(Location.objects.create(name="Test Location 1"))
+        cls.locations.append(Location.objects.create(name="Test Location 2"))
+
+        print "Generating events"
+        for i in xrange(cls.num_days):
+            for j in xrange(cls.events_per_day):
+                date = timezone.now() - datetime.timedelta(days=i)
+                vendor = vendors[(i + j) % len(vendors)]
+
+                vendor_event = VendorEvent.objects.create(date=date,
+                                                          vendor=vendor,
+                                                          location=cls.locations[i%2])
     def setUp(self):
-        call_command("update_vendors")                                            location=self.locations[i%2])
+        self.startTime = time.time()
 
-    def test_filter(self):
-        
-        count_list = Vendor.objects.event_counts_since(days_ago=30)
-        print count_list
+    def tearDown(self):
+        t = time.time() - self.startTime
+        print "%s: %.3f" % (self.id(), t)
 
-        # Entry.objects.filter(mod_date__gt=F('pub_date') + timedelta(days=3))
+    def total_events(self, event_counts):
+        return sum(x["event_count"] for x in event_counts)
 
-        # def get_date_in_past(days):
-        #     """Return a date that is days in the past from the current date."""
-        #     return timezone.now() - datetime.timedelta(days=days)
+    def test_fullrange(self):
+        count_list = Vendor.objects.get_sorted_event_counts(days_ago=self.num_days)
+        self.assertEqual(self.total_events(count_list), self.num_days * self.events_per_day)
 
-        # date_restricted = VendorEvent.objects.filter(date__gt=get_date_in_past(days=30))
-        # vendor_list = date_restricted.values("vendor").annotate(event_count=Count("id")).order_by("-event_count")
+    def test_one_day(self):
+        count_list = Vendor.objects.get_sorted_event_counts(days_ago=1)
+        self.assertEqual(self.total_events(count_list), self.events_per_day)
 
-        # #vendor_list = Vendor.objects.annotate(event_count=Count("vendorevent__vendor")).order_by("-event_count")
-
-        # for vendor in vendor_list:
-        #     print str(vendor) + " " + str(vendor)
-
-        #print len(vendor_restricted)   
-        #print Vendor.objects.annotate(event_count=Vendor.objects.filter(vendorevent__date__year=timezone.now().year, vendorevent__vendor="Test Vendor 1"))
-
-# class UpdateVendorsTestCase(TestCase):
-#     def test_command(self):
-#         call_command("update_vendors")
-#         for vendor in Vendor.objects.all():
-#             print vendor
-
-
-
+    def test_month(self):
+        count_list = Vendor.objects.get_sorted_event_counts(days_ago=30)
+        self.assertEqual(self.total_events(count_list), self.events_per_day*min(30,self.num_days))
