@@ -22,7 +22,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Vendor',
             fields=[
-                ('name', models.CharField(max_length=200, serialize=False, primary_key=True)),
+                ('key_name', models.CharField(max_length=200, serialize=False, primary_key=True)),
+                ('name', models.CharField(max_length=200)),
+                ('website', models.URLField()),
             ],
             options={
             },
