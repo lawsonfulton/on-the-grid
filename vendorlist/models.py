@@ -49,11 +49,11 @@ class Vendor(models.Model):
     objects = VendorManger()
 
     def events_since(self, days_ago=30):
-        def get_date_in_past(days):
-            """Return a date that is days in the past from the current date."""
-            return timezone.now() - datetime.timedelta(days=days)
+        """Return the number of events this vendor has attended since days_ago."""
+        today = timezone.now()
+        date_in_past = today - datetime.timedelta(days=days_ago)
 
-        filtered = VendorEvent.objects.filter(vendor=self,date__gt=get_date_in_past(days=days_ago))
+        filtered = VendorEvent.objects.filter(vendor=self,date__range=[date_in_past, today])
         return filtered.count()
 
     def __unicode__(self):
