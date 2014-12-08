@@ -33,12 +33,13 @@ class VendorManger(models.Manager):
     def get_event_counts(self, days_ago=30):
         vendors = Vendor.objects.all()
         vendor_and_count = []
-        
+
         for vendor in vendors:
             event_count = vendor.events_since(days_ago=days_ago)
             vendor_and_count.append({"vendor":vendor, "event_count":event_count})
 
         return vendor_and_count
+
 
 class Vendor(models.Model):
     key_name = models.CharField(max_length=200, primary_key=True)
