@@ -5,6 +5,19 @@ A web-app for keeping track of those delicious Off The Grid SF food trucks.
 
 ## Getting Started
 
+Create a file in the root folder called .env containing your keys
+
+    PYTHONUNBUFFERED=true
+    DATABASE_URL=postgres://localhost/onthegrid
+
+    HIPCHAT_API_TOKEN=
+    HIPCHAT_ROOM_ID=
+    OFFTHEGRID_LOCATION=YOUR_LOCATION eg. "5th and Minna"
+
+    FACEBOOK_APP_ID=
+    FACEBOOK_APP_SECRET=
+
+
 First make sure you have pip and virtualenv installed. Then install the required packages with
 
     $source venv/bin/activate
