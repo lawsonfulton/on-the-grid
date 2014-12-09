@@ -119,7 +119,7 @@ class Command(BaseCommand):
 
 
 #TODO
-#improve tests
-#Make sure SECRET_KEY and DEBUG are set to false
+#Make sure tests are accurate
 #Make a default .env file
 #Invite ginger to hipchat room
+

@@ -36,7 +36,7 @@ class VendorManger(models.Manager):
         key_name = self.make_key_name(name)
         return self.update_or_create(key_name=key_name, name=name, website=website)
 
-    def get_sorted_event_counts(self, days_ago=30):
+    def get_sorted_event_counts(self, days_ago=30, start_date=timezone.now()):
         """
         Queries the database to count number of events in days_ago for each vendor.
         Returns a list of {"vendor":Vendor, "event_count":int} sorted in descending order
@@ -46,12 +46,12 @@ class VendorManger(models.Manager):
         #Note this function could be a bottle neck for the database. However, a cache
         #could easily fix that if need be.
 
-        vendor_and_count = self.get_event_counts(days_ago=days_ago)
+        vendor_and_count = self.get_event_counts(days_ago=days_ago, start_date=start_date)
         vendor_and_count.sort(reverse=True, key=lambda x: x["event_count"])
 
         return vendor_and_count
 
-    def get_event_counts(self, days_ago=30):
+    def get_event_counts(self, days_ago=30, start_date=timezone.now()):
         """
         Queries the database to count number of events in days_ago for each vendor.
         Returns a list of {"vendor":Vendor, "event_count":int} unsorted.
@@ -60,7 +60,7 @@ class VendorManger(models.Manager):
         vendor_and_count = []
 
         for vendor in vendors:
-            event_count = vendor.events_since(days_ago=days_ago)
+            event_count = vendor.events_since(days_ago=days_ago, start_date=start_date)
             vendor_and_count.append({"vendor":vendor, "event_count":event_count})
 
         return vendor_and_count
@@ -91,12 +91,11 @@ class Vendor(models.Model):
 
     objects = VendorManger()
 
-    def events_since(self, days_ago=30):
+    def events_since(self, days_ago=30, start_date=timezone.now().date()):
         """Return the number of events this vendor has attended since days_ago."""
-        today = timezone.now()
-        date_in_past = today - timedelta(days=days_ago)
+        date_in_past = start_date - timedelta(days=days_ago)
 
-        filtered = VendorEvent.objects.filter(vendor=self,date__range=[date_in_past, today])
+        filtered = VendorEvent.objects.filter(vendor=self,date__range=[date_in_past, start_date])
         return filtered.count()
 
     def __unicode__(self):
