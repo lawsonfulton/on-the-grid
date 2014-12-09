@@ -6,18 +6,24 @@ from lxml import html
 
 
 class Command(BaseCommand):
+    """Scrapes the offthegridsf website for vendor information and updates the database."""
+    
     vendor_site = "http://offthegridsf.com/vendors"
     help = "Scrapes %s for new vendors." % vendor_site
 
     def handle(self, *args, **options):
         """Download the vendor list site and update the Vendor table."""
 
+        print "Scraping the offthegridsf website..."
         request = self.get_website(self.vendor_site)
         vendor_data_elements = self.get_vendor_data_elements(request)
 
+        print "Updating database..."
         for vendor_data in vendor_data_elements:
             self.add_vendor_to_db(vendor_data)
         
+        print "Success!"
+
     def get_website(self, site):
         """Returns a request for site."""
         try:
@@ -42,4 +48,4 @@ class Command(BaseCommand):
         name = vendor_name_link.text_content()
         website = vendor_name_link.attrib["href"]
 
-        vendor = Vendor.objects.update_or_create_vendor(name=name, website=website)
+        vendor, created = Vendor.objects.update_or_create_vendor(name=name, website=website)

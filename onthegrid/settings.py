@@ -49,10 +49,10 @@ WSGI_APPLICATION = 'onthegrid.wsgi.application'
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'US/Pacific'
 USE_I18N = True
 USE_L10N = True
-USE_TZ = True
+USE_TZ = False
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
@@ -79,6 +79,8 @@ STATICFILES_DIRS = (
 
 HIPCHAT_API_TOKEN=os.getenv("HIPCHAT_API_TOKEN")
 HIPCHAT_ROOM_ID=int(os.getenv("HIPCHAT_ROOM_ID"))
-OFFTHEGRID_LOCATION=os.getenv("OFFTHEGRID_LOCATION")
+OFFTHEGRID_LOCATION="850 front st., San Francisco CA"#os.getenv("OFFTHEGRID_LOCATION")
 FACEBOOK_APP_ID=os.getenv("FACEBOOK_APP_ID")
 FACEBOOK_APP_SECRET=os.getenv("FACEBOOK_APP_SECRET")
+HIPCHAT_MESSAGE_HEADER="""Hey Ginger.io! Ready for some delicious lunch? \
+Then check out these great food trucks over at %s.""" % OFFTHEGRID_LOCATION

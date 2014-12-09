@@ -50,3 +50,15 @@ class DatabaseTestCase(TestCase):
     def test_month(self):
         count_list = Vendor.objects.get_sorted_event_counts(days_ago=30)
         self.assertEqual(self.total_events(count_list), self.events_per_day*min(30,self.num_days))
+
+    def test_scrape_fb(self):
+        call_command("update_vendor_events")
+        count_list = Vendor.objects.get_sorted_event_counts(days_ago=30)
+        self.assertTrue(len(count_list) > 1)
+
+    def test_hipchat_post(self):
+        #just make sure it doesn't error
+        #could use api to check it was posted.
+        call_command("update_vendor_events")
+        call_command("post_to_hipchat")
+
