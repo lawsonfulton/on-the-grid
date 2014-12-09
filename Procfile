@@ -1,2 +1,1 @@
-web: gunicorn onthegrid.wsgi --log-file -
-clock: python clock.py
+web: python run_app.py

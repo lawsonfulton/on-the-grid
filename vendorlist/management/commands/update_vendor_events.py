@@ -61,10 +61,17 @@ class Command(BaseCommand):
         """
         description = event["description"]
         location_name = event["location"]
-        date = dateparser.parse(event["start_time"])
+        date = dateparser.parse(event["start_time"]).date()
 
         location, created = Location.objects.update_or_create(name=location_name)
         vendors = self.get_vendors_from_description(description)
+
+        # if "Uptown district boasts" in description:
+        #     print {"d":description}
+        #     print date
+        #     print location_name
+        #     print [vendor for vendor in vendors]
+        #     raise Exception
 
         event_count = 0
         for vendor in vendors:
@@ -78,7 +85,7 @@ class Command(BaseCommand):
         Parses an event description and returns a generator of Vendor objects.
         Seraching for vendor objects uses a primitive fuzzy search.
         """
-        lines =  description.rstrip().split('\r\n')
+        lines =  description.rstrip().split('\n')
         vendors = []
 
         potential_vendors = (self.get_vendor_from_string(line) for line in lines)
@@ -94,6 +101,7 @@ class Command(BaseCommand):
         Otherwise return None.
         """
         try:
+            # print Vendor.objects.make_key_name(string)
             return Vendor.objects.get_by_name(string)
         except Vendor.DoesNotExist:
             return None
@@ -103,7 +111,7 @@ class Command(BaseCommand):
 #xParse facebook data and store it
 #xpost appropriate data on hip chat
 #Update dns
-#Set up cron jobs
+#xSet up cron jobs
 #Make sure SECRET_KEY and DEBUG are set to false
 #Make a default .env file
 #Make it purty
