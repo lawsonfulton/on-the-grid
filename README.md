@@ -10,6 +10,8 @@ Create a file in the root folder called .env containing your keys
     PYTHONUNBUFFERED=true
     DATABASE_URL=postgres://localhost/onthegrid
 
+    DJANGO_SECRET_KEY=
+
     HIPCHAT_API_TOKEN=
     HIPCHAT_ROOM_ID=
     OFFTHEGRID_LOCATION=YOUR_LOCATION eg. "5th and Minna"

@@ -22,7 +22,7 @@ class Command(BaseCommand):
             today = dateparser.parse(args[0])
         else:
             today = timezone.now()
-            
+
         todays_vendors = self.get_vendors_by_date(today)
         message = self.make_message_from_vendors(todays_vendors)
 
@@ -65,6 +65,6 @@ class Command(BaseCommand):
             message += "Sorry! No trucks today!<br>"
 
         message += """<br>Check out how many events these trucks have been to recently \
-<a href='https://mysterious-wave-1441.herokuapp.com/vendorlist'>here</a>!"""
+<a href='%s'>here</a>!""" % settings.VENDOR_LIST_URL
 
         return message

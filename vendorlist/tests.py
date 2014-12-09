@@ -27,9 +27,9 @@ class DatabaseTestCase(TestCase):
     #     count_list = Vendor.objects.get_sorted_event_counts(days_ago=self.num_days)
     #     self.assertEqual(self.total_events(count_list), self.num_days * self.events_per_day)
 
-    def test_one_day(self):
-        count_list = Vendor.objects.get_sorted_event_counts(days_ago=1)
-        self.assertEqual(self.total_events(count_list), self.events_per_day)
+    # def test_one_day(self):
+    #     count_list = Vendor.objects.get_sorted_event_counts(days_ago=1)
+    #     self.assertEqual(self.total_events(count_list), self.events_per_day)
 
     # def test_month(self):
     #     count_list = Vendor.objects.get_sorted_event_counts(days_ago=30)

@@ -7,16 +7,17 @@ https://docs.djangoproject.com/en/1.7/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.7/ref/settings/
 """
+import os
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'l-ymqor&e9s)(5ux6)j_gz2@z6&uaod@m8b8$v+2q_at&ni-b_'
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-TEMPLATE_DEBUG = True
+DEBUG = False
+TEMPLATE_DEBUG = False
 
 DATABASES = {}
 
@@ -68,7 +69,6 @@ ALLOWED_HOSTS = ['*']
 
 # Static asset configuration
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
@@ -84,3 +84,5 @@ FACEBOOK_APP_ID=os.getenv("FACEBOOK_APP_ID")
 FACEBOOK_APP_SECRET=os.getenv("FACEBOOK_APP_SECRET")
 HIPCHAT_MESSAGE_HEADER="""Hey Ginger.io! Ready for some delicious lunch? \
 Then check out these great food trucks over at %s.""" % OFFTHEGRID_LOCATION
+
+VENDOR_LIST_URL="https://mysterious-wave-1441.herokuapp.com/vendorlist/"
