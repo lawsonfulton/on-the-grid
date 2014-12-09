@@ -19,9 +19,9 @@ class Command(BaseCommand):
         bot_name = "OnTheGrid"
 
         if args:
-            today = dateparser.parse(args[0])
+            today = dateparser.parse(args[0]).date()
         else:
-            today = timezone.now()
+            today = timezone.now().date()
 
         todays_vendors = self.get_vendors_by_date(today)
         message = self.make_message_from_vendors(todays_vendors)

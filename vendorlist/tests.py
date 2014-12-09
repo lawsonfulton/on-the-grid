@@ -8,7 +8,7 @@ from datetime import timedelta
 
 
 class DatabaseTestCase(TestCase):
-    today = dateparser.parse("2014-12-10") #This is a wednesday
+    today = dateparser.parse("2014-12-10").date() #This is a wednesday
 
     @classmethod
     def setUpClass(cls):
@@ -74,5 +74,15 @@ class DatabaseTestCase(TestCase):
         #Could use api if needed
         call_command("post_to_hipchat", "2014-12-10")
 
+    def test_get_oldest_date(self):
+        expected_oldest_date = datetime.date(2014, 11, 25)
+        actual = VendorEvent.objects.get_oldest_date()
 
+        self.assertEqual(actual, expected_oldest_date)
+
+    def test_num_days_of_data(self):
+        expected_days = 15
+        actual_days = VendorEvent.objects.get_num_days_of_data(30, self.today)
+
+        self.assertEqual(actual_days, expected_days)
 

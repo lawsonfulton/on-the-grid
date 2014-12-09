@@ -5,6 +5,13 @@ from vendorlist.models import VendorEvent, Vendor, Location
 
 
 def index(request):
-    vendor_event_counts = Vendor.objects.get_sorted_event_counts(days_ago=30)
-    context = {'vendor_event_counts': vendor_event_counts, 'days_ago':30}
+    days_to_display = 30
+    vendor_event_counts = Vendor.objects.get_sorted_event_counts(days_ago=days_to_display)
+    days_we_have = VendorEvent.objects.get_num_days_of_data(days_to_display)
+
+    context = {'vendor_event_counts': vendor_event_counts, 'days_ago': days_we_have}
     return render(request, 'vendorlist/index.html', context)
+
+
+
+

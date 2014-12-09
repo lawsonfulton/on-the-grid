@@ -36,7 +36,7 @@ class VendorManger(models.Manager):
         key_name = self.make_key_name(name)
         return self.update_or_create(key_name=key_name, name=name, website=website)
 
-    def get_sorted_event_counts(self, days_ago=30, start_date=timezone.now()):
+    def get_sorted_event_counts(self, days_ago=30, start_date=timezone.now().date()):
         """
         Queries the database to count number of events in days_ago for each vendor.
         Returns a list of {"vendor":Vendor, "event_count":int} sorted in descending order
@@ -51,7 +51,7 @@ class VendorManger(models.Manager):
 
         return vendor_and_count
 
-    def get_event_counts(self, days_ago=30, start_date=timezone.now()):
+    def get_event_counts(self, days_ago=30, start_date=timezone.now().date()):
         """
         Queries the database to count number of events in days_ago for each vendor.
         Returns a list of {"vendor":Vendor, "event_count":int} unsorted.
@@ -75,7 +75,7 @@ class VendorEventManager(models.Manager):
         """
 
         #Make today's date range
-        today = date.date()
+        today = date
         tomorrow = today + timedelta(1)
         today_start = datetime.combine(today, time())
         today_end = datetime.combine(tomorrow, time())
@@ -83,6 +83,21 @@ class VendorEventManager(models.Manager):
         return self.filter(location=location,
                            date__startswith=today)
 
+    def get_oldest_date(self):
+        """Return the event with the lowest date."""
+        return self.aggregate(models.Min("date"))["date__min"].date()
+
+    def get_num_days_of_data(self, days_ago, start_date=timezone.now().date()):
+        """
+        Return days_ago or the day-delta for the oldest date in the db if we
+        don't have enough data.
+        """
+        target_date = start_date - timedelta(days=days_ago)
+        oldest_date = self.get_oldest_date()
+
+        min_date = max(oldest_date, target_date)
+
+        return (start_date - min_date).days
 
 class Vendor(models.Model):
     key_name = models.CharField(max_length=200, primary_key=True)
