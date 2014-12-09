@@ -6,7 +6,7 @@ from itertools import ifilter
 import dateutil.parser as dateparser
 import facebook
 import urllib2
-
+import json
 
 class Command(BaseCommand):
     """Scrape the facebook event data for OffTheGridSF and add/update it to the database."""
@@ -16,8 +16,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print "Scraping the facebook page..."
-        graph = self.connect_to_facebook()
-        event_data = self.get_event_data(graph)
+
+        if args:
+            testing_mode = args[0]=="test" #If tests are being run, args[0] is always 'test'
+        else:
+            testing_mode = False
+
+        event_data = self.get_event_data(is_testing=testing_mode)
 
         print "Updating the database..."
         #If this is too slow, we could add only new events.
@@ -28,19 +33,19 @@ class Command(BaseCommand):
 
         print "Success! Added or updated %d events." % total_events
 
-    def connect_to_facebook(self):
-        """Use the app keys in the settings to connect to the facebook graph api."""
-        try:
-            access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
-                                                         settings.FACEBOOK_APP_SECRET)
-            graph = facebook.GraphAPI(access_token)
-        except urllib2.HTTPError as e:
-            raise CommandError("Bad Facebook app id or secret key.")
+    def get_event_data(self, is_testing=False):
+        """
+        Query the OffTheGridSF event page and return all event data available.
+        If tests are being run, load an old copy from disk.
+        """
 
-        return graph
+        if is_testing:
+            print "Loading data from disk..."
+            with open("vendorlist/test_data/vendor_event_data.json") as f:
+                return json.load(f)
 
-    def get_event_data(self, graph):
-        """Query the OffTheGridSF event page and return all event data."""
+        graph = self.connect_to_facebook()
+
         try:
             #I'm not sure if there is a limit to the 'limit', but it appears that there are at most
             #115 events stored on the page at the moment.
@@ -51,6 +56,19 @@ class Command(BaseCommand):
             raise CommandError("Couldn't connect to the OffTheGridSF page.")
 
         return response.get("data", None)
+
+    def connect_to_facebook(self):
+        """Use the app keys in the settings to connect to the facebook graph api."""
+        try:
+            access_token = facebook.get_app_access_token(settings.FACEBOOK_APP_ID,
+                                                         settings.FACEBOOK_APP_SECRET)
+            graph = facebook.GraphAPI(access_token)
+        except urllib2.HTTPError:
+            raise CommandError("Bad Facebook app id or secret key.")
+        except urllib2.URLError:
+            raise CommandError("Couldn't connect to facebook. You're probably offline.")
+
+        return graph
 
     def add_events_to_db(self, event):
         """
@@ -65,13 +83,6 @@ class Command(BaseCommand):
 
         location, created = Location.objects.update_or_create(name=location_name)
         vendors = self.get_vendors_from_description(description)
-
-        # if "Uptown district boasts" in description:
-        #     print {"d":description}
-        #     print date
-        #     print location_name
-        #     print [vendor for vendor in vendors]
-        #     raise Exception
 
         event_count = 0
         for vendor in vendors:
@@ -108,11 +119,7 @@ class Command(BaseCommand):
 
 
 #TODO
-#xParse facebook data and store it
-#xpost appropriate data on hip chat
-#Update dns
-#xSet up cron jobs
+#improve tests
 #Make sure SECRET_KEY and DEBUG are set to false
 #Make a default .env file
-#xMake it purty
-#xcheck heroku region
+#Invite ginger to hipchat room

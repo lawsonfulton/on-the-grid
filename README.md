@@ -35,6 +35,9 @@ If you want to deploy to Heroku then you can do
 
     $heroku login
 
+We need the newrelic plugin to keep our single dyno alive (and stay in free tier)
+    $heroku addons:add newrelic
+
 You have to set some secret keys like this
 
     $heroku config:set HIPCHAT_API_TOKEN=YOUR_API_TOKEN

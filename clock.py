@@ -1,18 +1,15 @@
 #This file controls the scheduling of tasks such as posting to hipchat
-#and updating the database with new information
-
 import subprocess
-from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.blocking import BlockingScheduler
 
 import logging
 logging.basicConfig()
 
 def main():
     start_scheduler()
-    start_webserver()
 
 def start_scheduler(): 
-    sched = BackgroundScheduler()
+    sched = BlockingScheduler()
 
     def db_tasks():
         subprocess.call(["python", "manage.py", "update_vendors"])
@@ -33,9 +30,6 @@ def start_scheduler():
         subprocess.call(["python", "manage.py", "post_to_hipchat"])
 
     sched.start()
-
-def start_webserver():
-    subprocess.call(["gunicorn", "onthegrid.wsgi", "--log-file", "-"])
 
 if __name__ == "__main__":
     main()
