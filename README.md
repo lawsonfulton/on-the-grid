@@ -29,6 +29,10 @@ Then install PostgreSQL and create a database called "onthegrid".
 
     $createdb onthegrid
 
+Run the tests just to make sure everything is working
+
+    $foreman python manage.py test
+
 Then you can start the application locally with
 
     $foreman start
