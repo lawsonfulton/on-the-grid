@@ -114,5 +114,5 @@ class Command(BaseCommand):
 #xSet up cron jobs
 #Make sure SECRET_KEY and DEBUG are set to false
 #Make a default .env file
-#Make it purty
-#check heroku region
+#xMake it purty
+#xcheck heroku region
