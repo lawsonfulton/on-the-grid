@@ -5,7 +5,7 @@ A web-app for keeping track of those delicious Off The Grid SF food trucks.
 
 ## Running Locally
 
-Create a file in the root folder called .env containing your keys
+Open a file in the root folder called .env and add your secret keys
 
     PYTHONUNBUFFERED=true
     DATABASE_URL=postgres://localhost/onthegrid
@@ -14,7 +14,7 @@ Create a file in the root folder called .env containing your keys
 
     HIPCHAT_API_TOKEN=
     HIPCHAT_ROOM_ID=
-    OFFTHEGRID_LOCATION=YOUR_LOCATION eg. "5th and Minna"
+    OFFTHEGRID_LOCATION="410 Minna St, San Francisco CA"
 
     FACEBOOK_APP_ID=
     FACEBOOK_APP_SECRET=
@@ -47,6 +47,7 @@ You have to set some secret keys like this
 
     $heroku config:set HIPCHAT_API_TOKEN=YOUR_API_TOKEN
     $heroku config:set HIPCHAT_ROOM_ID=YOUR_ROOM_ID
+    $heroku config:set DJANGO_SECRET_KEY=A_DJANGO_SECRET
     $heroku config:set OFFTHEGRID_LOCATION="410 Minna St, San Francisco CA"
     $heroku config:set FACEBOOK_APP_ID=YOUR_FB_APP_ID
     $heroku config:set FACEBOOK_APP_SECRET=YOUR_SECRET

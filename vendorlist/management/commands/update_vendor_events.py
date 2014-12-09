@@ -117,9 +117,3 @@ class Command(BaseCommand):
         except Vendor.DoesNotExist:
             return None
 
-
-#TODO
-#Make sure tests are accurate
-#Make a default .env file
-#Invite ginger to hipchat room
-
