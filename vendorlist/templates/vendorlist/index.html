@@ -1,9 +1,43 @@
-{% if vendor_event_counts %}
-    <ul>
-    {% for vendor_count in vendor_event_counts %}
-        <li><a href="{{ vendor_count.vendor.website }}">{{ vendor_count.vendor.name }}</a>, {{ vendor_count.event_count }}</li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No vendors are available.</p>
-{% endif %}
+
+<html>
+  <head>
+    <title>On The Grid</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static "vendorlist/style.css" %}">
+  </head>
+
+    <body>
+    <div id="outer"> 
+        <h1>Ginger.io - On The Grid</h1>
+        <table cellspacing='0'>
+
+            <!-- Table Header -->
+            <thead>
+                <tr>
+                    <th>Vendor Website</th>
+                    <th>Events in past {{ days_ago }} days</th>
+                </tr>
+            </thead>
+            <!-- Table Header -->
+
+            <!-- Table Body -->
+            <tbody>
+
+                {% for vendor_count in vendor_event_counts %}
+                    <tr>
+                        <td><a href="{{ vendor_count.vendor.website }}">{{ vendor_count.vendor.name }}</a></td>
+                        <td>{{ vendor_count.event_count }}</td>
+                    </tr><!-- Table Row -->
+                {% endfor %}
+
+                <!-- <tr class="even">
+                    <td>Take the dog for a walk</td>
+                    <td>100%</td>
+                    <td>Yes</td>
+                </tr>--><!-- Darker Table Row -->
+            </tbody>
+        </table>
+        </div>
+
+    </body>
+</html>
