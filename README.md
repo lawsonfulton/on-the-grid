@@ -3,7 +3,7 @@ on-the-grid
 
 A web-app for keeping track of those delicious Off The Grid SF food trucks.
 
-## Getting Started
+## Running Locally
 
 Create a file in the root folder called .env containing your keys
 
@@ -31,12 +31,11 @@ Then you can start the application locally with
 
     $foreman start
 
+## Running on Heroku
+
 If you want to deploy to Heroku then you can do
 
     $heroku login
-
-We need the newrelic plugin to keep our single dyno alive (and stay in free tier)
-    $heroku addons:add newrelic
 
 You have to set some secret keys like this
 
@@ -51,6 +50,7 @@ And finally launch
     $git push heroku master
     $heroku run python manage.py makemigrations vendorlist
     $heroku run puthon mange.py migrate
+    $heroku ps:scale clock=1
     $heroku open
     
 Enjoy :)
