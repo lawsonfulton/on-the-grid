@@ -51,6 +51,7 @@ You have to set some secret keys like this
     $heroku config:set OFFTHEGRID_LOCATION="410 Minna St, San Francisco CA"
     $heroku config:set FACEBOOK_APP_ID=YOUR_FB_APP_ID
     $heroku config:set FACEBOOK_APP_SECRET=YOUR_SECRET
+    $heroku config:add TZ="America/Los_Angeles"
 
 And finally launch
 
