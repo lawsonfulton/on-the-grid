@@ -19,6 +19,14 @@ def start_scheduler():
     def scheduled_job():
         db_tasks()
 
+    @sched.scheduled_job('cron', day_of_week='*', hour=23, minute=14)
+    def scheduled_job():
+        print "This is a test."
+
+    @sched.scheduled_job('cron', day_of_week='*', hour=7, minute=16)
+    def scheduled_job():
+        print "This is a test. 2"
+
     #Update the database once per day at 10am.
     @sched.scheduled_job('cron', day_of_week='*', hour=10)
     def scheduled_job():
