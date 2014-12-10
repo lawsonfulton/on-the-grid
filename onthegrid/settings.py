@@ -54,6 +54,10 @@ TIME_ZONE = 'US/Pacific'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+import warnings
+warnings.filterwarnings(
+        'error', r"DateTimeField .* received a naive datetime",
+        RuntimeWarning, r'django\.db\.models\.fields')
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
