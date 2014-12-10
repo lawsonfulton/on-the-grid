@@ -28,6 +28,8 @@ First make sure you have pip and virtualenv installed. Then install the required
 Then install PostgreSQL and create a database called "onthegrid".
 
     $createdb onthegrid
+    $foreman python manage.py makemigrations vendorlist
+    $foreman python mange.py migrate
 
 Run the tests just to make sure everything is working
 
@@ -57,7 +59,7 @@ And finally launch
 
     $git push heroku master
     $heroku run python manage.py makemigrations vendorlist
-    $heroku run puthon mange.py migrate
+    $heroku run python mange.py migrate
     $heroku ps:scale clock=1
     $heroku open
     
