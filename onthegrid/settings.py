@@ -53,7 +53,7 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'US/Pacific'
 USE_I18N = True
 USE_L10N = True
-USE_TZ = False
+USE_TZ = True
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
