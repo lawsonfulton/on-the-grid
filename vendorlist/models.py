@@ -36,7 +36,7 @@ class VendorManger(models.Manager):
         key_name = self.make_key_name(name)
         return self.update_or_create(key_name=key_name, name=name, website=website)
 
-    def get_sorted_event_counts(self, days_ago=30, start_date=timezone.now().date()):
+    def get_sorted_event_counts(self, days_ago=30, start_date=timezone.now()):
         """
         Queries the database to count number of events in days_ago for each vendor.
         Returns a list of {"vendor":Vendor, "event_count":int} sorted in descending order
@@ -51,7 +51,7 @@ class VendorManger(models.Manager):
 
         return vendor_and_count
 
-    def get_event_counts(self, days_ago=30, start_date=timezone.now().date()):
+    def get_event_counts(self, days_ago=30, start_date=timezone.now()):
         """
         Queries the database to count number of events in days_ago for each vendor.
         Returns a list of {"vendor":Vendor, "event_count":int} unsorted.
@@ -73,31 +73,24 @@ class VendorEventManager(models.Manager):
         Return a list of vendors with events that occur on the same day as date
         and at the same location as at location.
         """
-
-        #Make today's date range
-        today = date
-        tomorrow = today + timedelta(1)
-        today_start = datetime.combine(today, time())
-        today_end = datetime.combine(tomorrow, time())
         
         return self.filter(location=location,
-                           date__startswith=today)
+                           date__startswith=date.date())
 
     def get_oldest_date(self):
         """Return the event with the lowest date."""
-        return self.aggregate(models.Min("date"))["date__min"].date()
+        return self.aggregate(models.Min("date"))["date__min"]
 
-    def get_num_days_of_data(self, days_ago, start_date=timezone.now().date()):
+    def get_num_days_of_data(self, days_ago, start_date=timezone.now()):
         """
         Return days_ago or the day-delta for the oldest date in the db if we
         don't have enough data.
         """
-        target_date = start_date - timedelta(days=days_ago)
-        oldest_date = self.get_oldest_date()
-
+        target_date = (start_date - timedelta(days=days_ago)).date()
+        oldest_date = self.get_oldest_date().date()
         min_date = max(oldest_date, target_date)
 
-        return (start_date - min_date).days
+        return (start_date.date() - min_date).days + 1 #plus one for inclusive
 
 class Vendor(models.Model):
     key_name = models.CharField(max_length=200, primary_key=True)
@@ -106,11 +99,14 @@ class Vendor(models.Model):
 
     objects = VendorManger()
 
-    def events_since(self, days_ago=30, start_date=timezone.now().date()):
+    def events_since(self, days_ago=30, start_date=timezone.now()):
         """Return the number of events this vendor has attended since days_ago."""
-        date_in_past = start_date - timedelta(days=days_ago)
 
-        filtered = VendorEvent.objects.filter(vendor=self,date__range=[date_in_past, start_date])
+        end = (start_date + timedelta(days=1)).date() #date__range checks until 00:00 on the end date, so need to add one to include start
+        start = (start_date - timedelta(days=days_ago)).date()
+        date_range = [start, end]
+
+        filtered = VendorEvent.objects.filter(vendor=self, date__range=date_range)
         return filtered.count()
 
     def __unicode__(self):

@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from vendorlist.models import Vendor, VendorEvent, Location
 from django.conf import settings
+from django.utils import timezone
 from itertools import ifilter
 
 import dateutil.parser as dateparser
@@ -79,7 +80,7 @@ class Command(BaseCommand):
         """
         description = event["description"]
         location_name = event["location"]
-        date = dateparser.parse(event["start_time"]).date()
+        date = dateparser.parse(event["start_time"])
 
         location, created = Location.objects.update_or_create(name=location_name)
         vendors = self.get_vendors_from_description(description)

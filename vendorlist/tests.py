@@ -8,7 +8,7 @@ from datetime import timedelta
 
 
 class DatabaseTestCase(TestCase):
-    today = dateparser.parse("2014-12-10").date() #This is a wednesday
+    today = dateparser.parse("2014-12-10") #This is a wednesday
 
     @classmethod
     def setUpClass(cls):
@@ -42,7 +42,8 @@ class DatabaseTestCase(TestCase):
         self.assertEqual(added_vendors, expected_count)
 
     def test_date_range(self):
-        actual_num_events = 123 #counted explicitly from fb page
+        actual_num_events = 48 #counted explicitly from fb page
+        #self.today = timezone.now()
         vendor_count_pairs = Vendor.objects.get_sorted_event_counts(days_ago=0, start_date=self.today)
 
         num_added_events = 0
@@ -50,6 +51,14 @@ class DatabaseTestCase(TestCase):
             num_added_events += pair["event_count"]
 
         self.assertEqual(num_added_events, actual_num_events)
+
+    def test_events_since(self):
+        vendor_name = "Peruchi"
+        vendor = Vendor.objects.get_by_name(vendor_name)
+
+        event_count = vendor.events_since(days_ago=0, start_date=self.today)
+
+        self.assertEqual(event_count,1)
 
     def test_get_by_date_location(self):
         location = Location.objects.get(pk="410 Minna St, San Francisco CA")
@@ -76,12 +85,12 @@ class DatabaseTestCase(TestCase):
 
     def test_get_oldest_date(self):
         expected_oldest_date = datetime.date(2014, 11, 25)
-        actual = VendorEvent.objects.get_oldest_date()
+        actual = VendorEvent.objects.get_oldest_date().date()
 
         self.assertEqual(actual, expected_oldest_date)
 
     def test_num_days_of_data(self):
-        expected_days = 15
+        expected_days = 16  #Nov 25 - Dec 10 inclusive
         actual_days = VendorEvent.objects.get_num_days_of_data(30, self.today)
 
         self.assertEqual(actual_days, expected_days)

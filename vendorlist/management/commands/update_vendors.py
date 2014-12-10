@@ -62,7 +62,7 @@ class Command(BaseCommand):
         except IndexError:
             return
 
-        name = vendor_name_link.text_content()
+        name = vendor_name_link.text_content().strip()
         website = vendor_name_link.attrib["href"]
 
         return name, website
